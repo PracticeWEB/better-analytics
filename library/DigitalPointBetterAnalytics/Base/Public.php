@@ -333,9 +333,15 @@ class DigitalPointBetterAnalytics_Base_Public
 	public function insert_code()
 	{
 		$betterAnalyticsOptions = get_option('better_analytics');
-
-		echo "<!-- This site uses the Better Analytics plugin.  " . BETTER_ANALYTICS_PRODUCT_URL . " -->
-<script type='text/javascript' src='" . plugins_url('better-analytics/js/loader.php') . "?ver=" . BETTER_ANALYTICS_VERSION . ".js' ". (!empty($betterAnalyticsOptions['javascript']['defer']) ? 'defer="defer" ' : '') . "></script>";
+		$jsFile = 'ba-simple.js';
+		// Detect ecommerce or Pro plugins ans swtich to loader.
+        $ecommerceLocation = substr_replace(BETTER_ANALYTICS_PLUGIN_DIR, '-ecommerce', -1);
+        $proLocation = substr_replace(BETTER_ANALYTICS_PLUGIN_DIR, '-pro', -1);
+        if (file_exists($ecommerceLocation) || file_exists($proLocation)) {
+            $jsFile = 'loader.php';
+        }
+        echo "<!-- This site uses the Better Analytics plugin.  " . BETTER_ANALYTICS_PRODUCT_URL . " -->
+        <script type='text/javascript' src='" . plugins_url('better-analytics/js/' . $jsFile) . "?ver=" . BETTER_ANALYTICS_VERSION . ".js' ". (!empty($betterAnalyticsOptions['javascript']['defer']) ? 'defer="defer" ' : '') . "></script>";
 	}
 
 
